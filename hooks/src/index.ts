@@ -5,6 +5,7 @@ const port = 3000
 const app = express();
 const prisma = new PrismaClient();
 
+app.use(express.json());
 
 app.post("/hooks/catch/:userId/:taskId", async (req, res) => {
     const body = req.body;

@@ -17,6 +17,7 @@ const client_1 = require("@prisma/client");
 const port = 3000;
 const app = (0, express_1.default)();
 const prisma = new client_1.PrismaClient();
+app.use(express_1.default.json());
 app.post("/hooks/catch/:userId/:taskId", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const body = req.body;
     const userId = req.params.userId;
