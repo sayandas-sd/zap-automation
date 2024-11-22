@@ -61,8 +61,17 @@ model AvailableAction {
 }
 
 model TaskRun {
-  id         String   @id @default(uuid())
-  taskId     String
-  task       Task     @relation(fields: [taskId], references: [id])
+  id            String        @id @default(uuid())
+  taskId        String
+  metadata      Json
+  task          Task          @relation(fields: [taskId], references: [id])
+  taskRunout    TaskRunOut?
+}
+
+
+model TaskRunOut {
+  id          String    @id @default(uuid())
+  taskRunId   String    @unique
+  taskRun     TaskRun   @relation(fields: [taskRunId], references: [id])
 }
 
