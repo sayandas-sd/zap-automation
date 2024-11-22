@@ -26,6 +26,7 @@ model Task {
   triggerId   String
   trigger     Trigger?  
   action      Action[]
+  taskRun     TaskRun[]
 }
  
 model Trigger {
@@ -57,5 +58,11 @@ model AvailableAction {
   id        String      @id @default(uuid())
   name      String
   actions   Action[]
+}
+
+model TaskRun {
+  id         String   @id @default(uuid())
+  taskId     String
+  task       Task     @relation(fields: [taskId], references: [id])
 }
 
