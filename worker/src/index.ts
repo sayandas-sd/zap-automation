@@ -10,9 +10,14 @@ const kafka = new Kafka({
 
 
 async function main() {
-
+    const consumer = kafka.consumer({ groupId: 'worker-main' })
+    await consumer.connect()
+    
     while(1) {
-
+        await consumer.subscribe({ 
+            topic: 'zap-task-events', 
+            fromBeginning: true 
+        })
     }
 }
 
