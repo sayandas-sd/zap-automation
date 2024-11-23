@@ -24,9 +24,10 @@ async function main() {
        
         producer.send({
             topic: TOPIC_NAME,
-            messages: [
-                { value: 'Hello KafkaJS user!' },
-            ],
+            messages: pendingData.map(r => ({
+                    value: r.taskRunId
+                }))
+            
         })
 
     }
