@@ -13,14 +13,14 @@ app.post("/hooks/catch/:userId/:taskId", async (req, res) => {
     const taskId = req.params.taskId;
     
     await prisma.$transaction(async tx => {
-        const taskRun = await prisma.taskRun.create({
+        const taskRun = await tx.taskRun.create({
             data: {
                 taskId: taskId,
                 metadata: body
             }
         });
 
-        await prisma.taskRunOut.create({
+        await tx.taskRunOut.create({
             data: {
                 taskRunId: taskRun.id
             }
