@@ -2,6 +2,7 @@ import { PrismaClient } from '@prisma/client'
 import { Kafka } from "kafkajs";
 
 const worker = new PrismaClient();
+const TOPIC_NAME = "task-events";
 
 const kafka = new Kafka({
     clientId: 'outbox_worker',
@@ -12,7 +13,7 @@ async function main() {
 
     const producer = kafka.producer()
     await producer.connect()
-    const consumer = kafka.consumer({ groupId: 'test-group' })
+    
 
     while(1) {
         const pendingData = await worker.taskRunOut.findMany({
@@ -20,9 +21,14 @@ async function main() {
             take: 10
         })
 
-        pendingData.forEach(r => {
-
+       
+        producer.send({
+            topic: TOPIC_NAME,
+            messages: [
+                { value: 'Hello KafkaJS user!' },
+            ],
         })
+
     }
 }
 
