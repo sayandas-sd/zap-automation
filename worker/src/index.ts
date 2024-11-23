@@ -13,12 +13,26 @@ async function main() {
     const consumer = kafka.consumer({ groupId: 'worker-main' })
     await consumer.connect()
     
-    while(1) {
-        await consumer.subscribe({ 
-            topic: 'zap-task-events', 
-            fromBeginning: true 
-        })
-    }
+   
+    await consumer.subscribe({ 
+        topic: 'zap-task-events', 
+        fromBeginning: true 
+    })
+
+    await consumer.run({
+        eachMessage: async ({ topic, partition, message }) => {
+          console.log({
+            partition,
+            offset: message.offset,
+            value: message.value?.toString(),
+          })
+        
+          
+          await new Promise(r => setTimeout(r, 1000));
+
+        },
+      })
+    
 }
 
 main();
