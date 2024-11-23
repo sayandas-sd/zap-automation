@@ -3,15 +3,13 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "tsc -b && node dist/index.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@prisma/client": "^5.22.0",
-    "kafkajs": "^2.2.4",
-    "prisma": "^5.22.0"
+    "kafkajs": "^2.2.4"
   }
 }
