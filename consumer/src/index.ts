@@ -19,19 +19,7 @@ async function main() {
         fromBeginning: true 
     })
 
-    await consumer.run({
-        eachMessage: async ({ topic, partition, message }) => {
-          console.log({
-            partition,
-            offset: message.offset,
-            value: message.value?.toString(),
-          })
-        
-          
-          await new Promise(r => setTimeout(r, 1000));
-
-        },
-      })
+   
     
 }
 
