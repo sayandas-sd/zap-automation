@@ -27,6 +27,10 @@ app.post("/hooks/catch/:userId/:taskId", async (req, res) => {
         })
     })
 
+    res.json({
+        msg: "webhook received"
+    })
+
 })
 
 app.listen(port, () => {

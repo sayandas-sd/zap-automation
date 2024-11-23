@@ -35,6 +35,9 @@ app.post("/hooks/catch/:userId/:taskId", (req, res) => __awaiter(void 0, void 0,
             }
         });
     }));
+    res.json({
+        msg: "webhook received"
+    });
 }));
 app.listen(port, () => {
     console.log(`server is running at ${port}`);
