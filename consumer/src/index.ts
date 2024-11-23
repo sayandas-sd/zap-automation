@@ -3,7 +3,7 @@ import { Kafka } from "kafkajs";
 const TOPIC_NAME = "zap-task-events";
 
 const kafka = new Kafka({
-    clientId: 'outbox_worker',
+    clientId: 'outbox_consumer',
     brokers: ['localhost:9092']
   })
 
@@ -20,6 +20,7 @@ async function main() {
     })
 
     await consumer.run({
+      autoCommit: false,
         eachMessage: async ({ topic, partition, message }) => {
           console.log({
             partition,
@@ -28,8 +29,15 @@ async function main() {
           })
         
           
-          await new Promise(r => setTimeout(r, 1000));
+          await new Promise(time => setTimeout(time, 5000));
 
+          console.log("processing");
+
+          await consumer.commitOffsets([{
+            topic: TOPIC_NAME,
+            partition: partition,
+            offset: (parseInt(message.offset) + 1).toString()
+          }])
         },
       })
     

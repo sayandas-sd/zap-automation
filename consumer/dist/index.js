@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const kafkajs_1 = require("kafkajs");
 const TOPIC_NAME = "zap-task-events";
 const kafka = new kafkajs_1.Kafka({
-    clientId: 'outbox_worker',
+    clientId: 'outbox_consumer',
     brokers: ['localhost:9092']
 });
 function main() {
@@ -24,6 +24,7 @@ function main() {
             fromBeginning: true
         });
         yield consumer.run({
+            autoCommit: false,
             eachMessage: (_a) => __awaiter(this, [_a], void 0, function* ({ topic, partition, message }) {
                 var _b;
                 console.log({
@@ -31,7 +32,13 @@ function main() {
                     offset: message.offset,
                     value: (_b = message.value) === null || _b === void 0 ? void 0 : _b.toString(),
                 });
-                yield new Promise(r => setTimeout(r, 1000));
+                yield new Promise(time => setTimeout(time, 5000));
+                console.log("processing");
+                yield consumer.commitOffsets([{
+                        topic: TOPIC_NAME,
+                        partition: partition,
+                        offset: (parseInt(message.offset) + 1).toString()
+                    }]);
             }),
         });
     });
