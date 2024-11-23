@@ -27,15 +27,16 @@ model Task {
   trigger     Trigger?  
   action      Action[]
   taskRun     TaskRun[]
+
 }
  
 model Trigger {
-  id         String             @id @default(uuid())
-  triggerId  String
-  type       AvailableTrigger   @relation(fields: [triggerId], references: [id])
-  TaskId     String             @unique
-  task       Task               @relation(fields: [TaskId], references: [id])
-  
+  id            String             @id @default(uuid())
+  triggerId     String
+  type          AvailableTrigger   @relation(fields: [triggerId], references: [id])
+  TaskId        String             @unique
+  task          Task               @relation(fields: [TaskId], references: [id])
+  sortingOrder  Int                @default(0)
 }
 
 model AvailableTrigger {
