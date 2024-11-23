@@ -23,13 +23,13 @@ app.post("/hooks/catch/:userId/:taskId", (req, res) => __awaiter(void 0, void 0,
     const userId = req.params.userId;
     const taskId = req.params.taskId;
     yield prisma.$transaction((tx) => __awaiter(void 0, void 0, void 0, function* () {
-        const taskRun = yield prisma.taskRun.create({
+        const taskRun = yield tx.taskRun.create({
             data: {
                 taskId: taskId,
                 metadata: body
             }
         });
-        yield prisma.taskRunOut.create({
+        yield tx.taskRunOut.create({
             data: {
                 taskRunId: taskRun.id
             }

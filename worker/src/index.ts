@@ -15,7 +15,7 @@ async function main() {
     
    
     await consumer.subscribe({ 
-        topic: 'zap-task-events', 
+        topic: TOPIC_NAME, 
         fromBeginning: true 
     })
 
@@ -35,4 +35,4 @@ async function main() {
     
 }
 
-main();
+main()
