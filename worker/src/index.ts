@@ -1,5 +1,7 @@
+import { PrismaClient } from '@prisma/client'
 import { Kafka } from "kafkajs";
 
+const worker = new PrismaClient();
 const TOPIC_NAME = "zap-task-events";
 
 const kafka = new Kafka({
@@ -7,32 +9,35 @@ const kafka = new Kafka({
     brokers: ['localhost:9092']
   })
 
-
-
 async function main() {
-    const consumer = kafka.consumer({ groupId: 'worker-main' })
-    await consumer.connect()
-    
-   
-    await consumer.subscribe({ 
-        topic: TOPIC_NAME, 
-        fromBeginning: true 
-    })
 
-    await consumer.run({
-        eachMessage: async ({ topic, partition, message }) => {
-          console.log({
-            partition,
-            offset: message.offset,
-            value: message.value?.toString(),
-          })
+    const producer = kafka.producer()
+    await producer.connect()
+    
+
+    while(1) {
         
-          
-          await new Promise(r => setTimeout(r, 1000));
+        const pendingData = await worker.taskRunOut.findMany({
+            where:{},
+            take: 10
+        })
+       
+        producer.send({
+            topic: TOPIC_NAME,
+            messages: pendingData.map(r => ({
+                    value: r.taskRunId
+            }))
+        })
 
-        },
-      })
-    
+        await worker.taskRunOut.deleteMany({
+            where: {
+                id: {
+                    in: pendingData.map(r => r.id)
+                }
+            }
+        })
+
+    }
 }
 
-main()
+main();

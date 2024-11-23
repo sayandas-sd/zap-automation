@@ -9,7 +9,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const client_1 = require("@prisma/client");
 const kafkajs_1 = require("kafkajs");
+const worker = new client_1.PrismaClient();
 const TOPIC_NAME = "zap-task-events";
 const kafka = new kafkajs_1.Kafka({
     clientId: 'outbox_worker',
@@ -17,23 +19,27 @@ const kafka = new kafkajs_1.Kafka({
 });
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
-        const consumer = kafka.consumer({ groupId: 'worker-main' });
-        yield consumer.connect();
-        yield consumer.subscribe({
-            topic: TOPIC_NAME,
-            fromBeginning: true
-        });
-        yield consumer.run({
-            eachMessage: (_a) => __awaiter(this, [_a], void 0, function* ({ topic, partition, message }) {
-                var _b;
-                console.log({
-                    partition,
-                    offset: message.offset,
-                    value: (_b = message.value) === null || _b === void 0 ? void 0 : _b.toString(),
-                });
-                yield new Promise(r => setTimeout(r, 1000));
-            }),
-        });
+        const producer = kafka.producer();
+        yield producer.connect();
+        while (1) {
+            const pendingData = yield worker.taskRunOut.findMany({
+                where: {},
+                take: 10
+            });
+            producer.send({
+                topic: TOPIC_NAME,
+                messages: pendingData.map(r => ({
+                    value: r.taskRunId
+                }))
+            });
+            yield worker.taskRunOut.deleteMany({
+                where: {
+                    id: {
+                        in: pendingData.map(r => r.id)
+                    }
+                }
+            });
+        }
     });
 }
 main();
