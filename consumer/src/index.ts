@@ -19,7 +19,19 @@ async function main() {
         fromBeginning: true 
     })
 
-   
+    await consumer.run({
+        eachMessage: async ({ topic, partition, message }) => {
+          console.log({
+            partition,
+            offset: message.offset,
+            value: message.value?.toString(),
+          })
+        
+          
+        
+
+        },
+      })
     
 }
 
