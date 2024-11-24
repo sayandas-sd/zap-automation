@@ -22,7 +22,6 @@ const config_1 = require("../config");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const router = (0, express_1.Router)();
 router.post("/signup", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
     const body = req.body;
     const parseData = types_1.SignupSchema.safeParse(body);
     if (!parseData.success) {
@@ -34,7 +33,7 @@ router.post("/signup", (req, res) => __awaiter(void 0, void 0, void 0, function*
     try {
         const userExits = yield db_1.prisma.user.findFirst({
             where: {
-                email: (_a = parseData.data) === null || _a === void 0 ? void 0 : _a.username
+                email: parseData.data.username
             }
         });
         if (userExits) {
@@ -88,8 +87,8 @@ router.post("/signin", (req, res) => __awaiter(void 0, void 0, void 0, function*
             });
             return;
         }
-        const password = bcrypt_1.default.compare(parseData.data.password, user.password);
-        if (!password) {
+        const passwordMatch = bcrypt_1.default.compare(parseData.data.password, user.password);
+        if (!passwordMatch) {
             res.status(403).json({
                 msg: "Incorrect credentials"
             });
@@ -107,7 +106,7 @@ router.post("/signin", (req, res) => __awaiter(void 0, void 0, void 0, function*
         });
     }
 }));
-router.get("/user", middleware_1.authMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.get("/", middleware_1.authMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     //@ts-ignore
     const id = req.id;
     const user = yield db_1.prisma.user.findFirst({
