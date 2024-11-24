@@ -5,12 +5,12 @@ import { prisma } from "../db";
 import { SigninSchema, SignupSchema } from "../types";
 import jwt from "jsonwebtoken";
 import { JWT_PASSWORD } from "../config";
-
+import bcrypt from "bcrypt";
 
 const router = Router();
 
 router.post("/signup", async (req,res) => {
-    const body = req.body.username;
+    const body = req.body;
     const parseData = SignupSchema.safeParse(body);
     
     if(!parseData.success) {
@@ -33,10 +33,14 @@ router.post("/signup", async (req,res) => {
             return;
         }
 
+        //hash password
+        const salt = 10;
+        const hashPass = await bcrypt.hash(parseData.data.password, salt);
+
         const user = await prisma.user.create({
             data: {
                 email: parseData.data.username,
-                password: parseData.data.password,
+                password: hashPass,
                 name: parseData.data.name,
             }
         })
@@ -67,13 +71,13 @@ router.post("/signin", async (req,res) => {
         res.status(411).json({
             msg: "Incorrect Input"
         })
+        return;
     }
 
     try {
         const user = await prisma.user.findFirst({
             where: {
-                email: parseData.data?.username,
-                password: parseData.data?.password
+                email: parseData.data.username,
             }
         })
 
@@ -81,6 +85,15 @@ router.post("/signin", async (req,res) => {
             res.status(403).json({
                 msg: "Incorrect credentials"
             })
+            return;
+        }
+        
+        const password = bcrypt.compare(parseData.data.password, user.password)
+
+        if (!password) {
+            res.status(403).json({
+                msg: "Incorrect credentials"
+            });
         }
 
         const token = jwt.sign({
@@ -98,6 +111,7 @@ router.post("/signin", async (req,res) => {
     }
 
 }) 
+
 router.get("/user", authMiddleware, async (req,res) => {
     //@ts-ignore
     const id = req.id;
