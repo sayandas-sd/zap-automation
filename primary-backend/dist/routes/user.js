@@ -94,7 +94,7 @@ router.post("/signin", (req, res) => __awaiter(void 0, void 0, void 0, function*
             });
         }
         const token = jsonwebtoken_1.default.sign({
-            id: user === null || user === void 0 ? void 0 : user.id
+            id: user.id
         }, config_1.JWT_PASSWORD);
         res.json({
             token

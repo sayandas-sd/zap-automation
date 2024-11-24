@@ -19,6 +19,7 @@ model User {
   name        String
   email       String
   password    String
+  task        Task[]
 }
 
 model Task {
@@ -27,7 +28,8 @@ model Task {
   trigger     Trigger?  
   action      Action[]
   taskRun     TaskRun[]
-
+  userId      Int
+  user        User        @relation(fields: [userId], references: [id])
 }
  
 model Trigger {

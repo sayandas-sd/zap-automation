@@ -21,14 +21,14 @@ router.post("/", authMiddleware, async (req,res) => {
             data: {
                 triggerId: "",
                 action: {
-                        create: parseData.data.action.map((r, index) => ({
-                            actionId: r.availablActionId,
-                            sortingOrder: index
-                        }))
+                    create: parseData.data.action.map((r, index) => ({
+                        actionId: r.availablActionId,
+                        sortingOrder: index
+                    }))
                 }
             }
         })
-
+        
         const trigger = await tx.trigger.create({
             data: {
                 triggerId: parseData.data.availableTriggerId,
@@ -36,14 +36,28 @@ router.post("/", authMiddleware, async (req,res) => {
             }
         })
 
+        await tx.task.update({
+            where: {
+                id: task.id
+            },
+            data: {
+                triggerId: trigger.id
+            }
+        })
         
-
+        
     })
 
     
 })
 
-router.get("/", authMiddleware, (req,res) => {
+router.get("/:id", authMiddleware, (req,res) => {
+
+    const id = req.params.id;
+    res.json({
+        id: id
+    })
+
 
 })
 
