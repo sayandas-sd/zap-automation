@@ -25,10 +25,10 @@ model User {
 model Task {
   id          String      @id @default(uuid())
   triggerId   String
+  userId      Int
   trigger     Trigger?  
   action      Action[]
   taskRun     TaskRun[]
-  userId      Int
   user        User        @relation(fields: [userId], references: [id])
 }
  

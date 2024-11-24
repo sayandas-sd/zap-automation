@@ -7,6 +7,8 @@ const router = Router();
 
 router.post("/", authMiddleware, async (req,res) => {
     const body = req.body;
+    //@ts-ignore
+    const id: string = req.id;
     const parseData = TaskSchema.safeParse(body);
 
     if(!parseData.success) {
@@ -16,9 +18,10 @@ router.post("/", authMiddleware, async (req,res) => {
         return;
     }
 
-    await prisma.$transaction(async tx => {
+    const allTaskId = await prisma.$transaction(async tx => {
         const task = await prisma.task.create({
             data: {
+                userId: parseInt(id),
                 triggerId: "",
                 action: {
                     create: parseData.data.action.map((r, index) => ({
@@ -44,25 +47,71 @@ router.post("/", authMiddleware, async (req,res) => {
                 triggerId: trigger.id
             }
         })
-        
-        
+         
+        return task.id;
+    })
+
+    res.json({
+        allTaskId
     })
 
     
 })
 
-router.get("/:id", authMiddleware, (req,res) => {
-
-    const id = req.params.id;
-    res.json({
-        id: id
+router.get("/", authMiddleware, async (req,res) => {
+    //@ts-ignore
+    const id = req.id;
+    const task = await prisma.task.findMany({
+        where: {
+            userId: id
+        },
+        include: {
+            action: {
+                include: {
+                    type: true
+                }
+            },
+            trigger: {
+                include: {
+                    type: true
+                }
+            }
+        }
     })
-
+    
+    res.json({
+        task
+    })
 
 })
 
-router.get("/:taskId", authMiddleware, (req,res) => {
+router.get("/:taskId", authMiddleware, async (req,res) => {
+    //@ts-ignore
+    const id = req.id;
+    const taskId = req.params.taskId;
 
+    const task = await prisma.task.findMany({
+        where: {
+            id: taskId,
+            userId: id,
+        },
+        include: {
+            action: {
+                include: {
+                    type: true
+                }
+            },
+            trigger: {
+                include: {
+                    type: true
+                }
+            }
+        }
+    })
+
+    res.json({
+        task
+    })
 })
 
 export const taskRouter = router;

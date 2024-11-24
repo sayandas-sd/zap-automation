@@ -17,6 +17,8 @@ const db_1 = require("../db");
 const router = (0, express_1.Router)();
 router.post("/", middleware_1.authMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const body = req.body;
+    //@ts-ignore
+    const id = req.id;
     const parseData = types_1.TaskSchema.safeParse(body);
     if (!parseData.success) {
         res.status(411).json({
@@ -24,9 +26,10 @@ router.post("/", middleware_1.authMiddleware, (req, res) => __awaiter(void 0, vo
         });
         return;
     }
-    yield db_1.prisma.$transaction((tx) => __awaiter(void 0, void 0, void 0, function* () {
+    const allTaskId = yield db_1.prisma.$transaction((tx) => __awaiter(void 0, void 0, void 0, function* () {
         const task = yield db_1.prisma.task.create({
             data: {
+                userId: parseInt(id),
                 triggerId: "",
                 action: {
                     create: parseData.data.action.map((r, index) => ({
@@ -50,14 +53,60 @@ router.post("/", middleware_1.authMiddleware, (req, res) => __awaiter(void 0, vo
                 triggerId: trigger.id
             }
         });
+        return task.id;
     }));
-}));
-router.get("/:id", middleware_1.authMiddleware, (req, res) => {
-    const id = req.params.id;
     res.json({
-        id: id
+        allTaskId
     });
-});
-router.get("/:taskId", middleware_1.authMiddleware, (req, res) => {
-});
+}));
+router.get("/", middleware_1.authMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    //@ts-ignore
+    const id = req.id;
+    const task = yield db_1.prisma.task.findMany({
+        where: {
+            userId: id
+        },
+        include: {
+            action: {
+                include: {
+                    type: true
+                }
+            },
+            trigger: {
+                include: {
+                    type: true
+                }
+            }
+        }
+    });
+    res.json({
+        task
+    });
+}));
+router.get("/:taskId", middleware_1.authMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    //@ts-ignore
+    const id = req.id;
+    const taskId = req.params.taskId;
+    const task = yield db_1.prisma.task.findMany({
+        where: {
+            id: taskId,
+            userId: id,
+        },
+        include: {
+            action: {
+                include: {
+                    type: true
+                }
+            },
+            trigger: {
+                include: {
+                    type: true
+                }
+            }
+        }
+    });
+    res.json({
+        task
+    });
+}));
 exports.taskRouter = router;
