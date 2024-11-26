@@ -45,19 +45,15 @@ router.post("/signup", (req, res) => __awaiter(void 0, void 0, void 0, function*
         //hash password
         const salt = 10;
         const hashPass = yield bcrypt_1.default.hash(parseData.data.password, salt);
-        const user = yield db_1.prisma.user.create({
+        yield db_1.prisma.user.create({
             data: {
                 email: parseData.data.username,
                 password: hashPass,
                 name: parseData.data.name,
             }
         });
-        const token = jsonwebtoken_1.default.sign({
-            id: user.id,
-        }, config_1.JWT_PASSWORD);
         res.status(200).json({
-            msg: "Signup successful",
-            token
+            msg: "Signup successful and Please verify your account ",
         });
     }
     catch (e) {
