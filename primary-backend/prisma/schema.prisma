@@ -35,6 +35,7 @@ model Task {
 model Trigger {
   id            String             @id @default(uuid())
   triggerId     String
+  metadata      Json               @default("{}")
   type          AvailableTrigger   @relation(fields: [triggerId], references: [id])
   TaskId        String             @unique
   task          Task               @relation(fields: [TaskId], references: [id])
@@ -49,11 +50,12 @@ model AvailableTrigger {
 
  
 model Action {
-  id         String             @id @default(uuid())
-  actionId   String
-  type       AvailableAction    @relation(fields: [actionId], references: [id])
-  TaskId     String             @unique
-  task       Task               @relation(fields: [TaskId], references: [id])
+  id            String             @id @default(uuid())
+  actionId      String
+  metadata      Json               @default("{}")
+  type          AvailableAction    @relation(fields: [actionId], references: [id])
+  TaskId        String             @unique
+  task          Task               @relation(fields: [TaskId], references: [id])
   sortingOrder  Int                @default(0)
   
 }

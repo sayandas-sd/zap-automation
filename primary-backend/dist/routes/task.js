@@ -34,7 +34,8 @@ router.post("/", middleware_1.authMiddleware, (req, res) => __awaiter(void 0, vo
                 action: {
                     create: parseData.data.action.map((r, index) => ({
                         actionId: r.availableActionId,
-                        sortingOrder: index
+                        sortingOrder: index,
+                        metadata: r.actionMetadata
                     }))
                 }
             }
@@ -55,7 +56,7 @@ router.post("/", middleware_1.authMiddleware, (req, res) => __awaiter(void 0, vo
         });
         return task.id;
     }));
-    res.json({
+    res.status(200).json({
         allTaskId
     });
 }));

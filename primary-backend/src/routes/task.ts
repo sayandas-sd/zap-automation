@@ -26,7 +26,8 @@ router.post("/", authMiddleware, async (req,res) => {
                 action: {
                     create: parseData.data.action.map((r, index) => ({
                         actionId: r.availableActionId,
-                        sortingOrder: index
+                        sortingOrder: index,
+                        metadata: r.actionMetadata
                     }))
                 }
             }
@@ -51,7 +52,7 @@ router.post("/", authMiddleware, async (req,res) => {
         return task.id;
     })
     
-    res.json({
+    res.status(200).json({
         allTaskId
     })
 
