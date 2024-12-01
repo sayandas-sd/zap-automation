@@ -33,7 +33,7 @@ router.post("/", middleware_1.authMiddleware, (req, res) => __awaiter(void 0, vo
                 triggerId: "",
                 action: {
                     create: parseData.data.action.map((r, index) => ({
-                        actionId: r.availablActionId,
+                        actionId: r.availableActionId,
                         sortingOrder: index
                     }))
                 }

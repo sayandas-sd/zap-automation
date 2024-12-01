@@ -25,7 +25,7 @@ router.post("/", authMiddleware, async (req,res) => {
                 triggerId: "",
                 action: {
                     create: parseData.data.action.map((r, index) => ({
-                        actionId: r.availablActionId,
+                        actionId: r.availableActionId,
                         sortingOrder: index
                     }))
                 }
@@ -50,10 +50,11 @@ router.post("/", authMiddleware, async (req,res) => {
          
         return task.id;
     })
-
+    
     res.json({
         allTaskId
     })
+
 
     
 })

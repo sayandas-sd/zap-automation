@@ -14,9 +14,9 @@ const express_1 = require("express");
 const db_1 = require("../db");
 const router = (0, express_1.Router)();
 router.get("/details", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const availablActions = yield db_1.prisma.availableAction.findMany({});
+    const availableActions = yield db_1.prisma.availableAction.findMany({});
     res.json({
-        availablActions
+        availableActions
     });
 }));
 exports.actionRouter = router;

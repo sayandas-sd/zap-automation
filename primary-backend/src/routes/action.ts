@@ -6,11 +6,11 @@ import { prisma } from "../db";
 
 const router = Router();
 
-router.get("/details", async (req,res)=> {
-    const availablActions = await prisma.availableAction.findMany({});
+router.get("/details",  async (req,res)=> {
+    const availableActions = await prisma.availableAction.findMany({});
 
     res.json({
-        availablActions
+        availableActions
     })
 })
 

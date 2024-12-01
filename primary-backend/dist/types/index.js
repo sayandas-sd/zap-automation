@@ -15,7 +15,7 @@ exports.TaskSchema = zod_1.z.object({
     availableTriggerId: zod_1.z.string(),
     triggerMetadata: zod_1.z.any().optional(),
     action: zod_1.z.array(zod_1.z.object({
-        availablActionId: zod_1.z.string(),
+        availableActionId: zod_1.z.string(),
         actionMetadata: zod_1.z.any().optional()
     }))
 });

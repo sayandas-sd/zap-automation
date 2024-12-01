@@ -89,7 +89,7 @@ router.post("/signin", async (req,res) => {
 
         if (!passwordMatch) {
             res.status(403).json({
-                msg: "Incorrect credentials"
+                msg: "Incorrect credentials and password"
             });
         }
 

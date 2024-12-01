@@ -17,7 +17,7 @@ export const TaskSchema = z.object({
     availableTriggerId: z.string(),
     triggerMetadata: z.any().optional(), 
     action: z.array(z.object({
-        availablActionId: z.string(),
+        availableActionId: z.string(),
         actionMetadata: z.any().optional()
     }))
 })

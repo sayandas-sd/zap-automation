@@ -86,7 +86,7 @@ router.post("/signin", (req, res) => __awaiter(void 0, void 0, void 0, function*
         const passwordMatch = bcrypt_1.default.compare(parseData.data.password, user.password);
         if (!passwordMatch) {
             res.status(403).json({
-                msg: "Incorrect credentials"
+                msg: "Incorrect credentials and password"
             });
         }
         const token = jsonwebtoken_1.default.sign({
