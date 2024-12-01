@@ -54,7 +54,7 @@ model Action {
   actionId      String
   metadata      Json               @default("{}")
   type          AvailableAction    @relation(fields: [actionId], references: [id])
-  TaskId        String             @unique
+  TaskId        String            
   task          Task               @relation(fields: [TaskId], references: [id])
   sortingOrder  Int                @default(0)
   
