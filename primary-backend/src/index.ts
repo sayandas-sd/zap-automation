@@ -7,7 +7,7 @@ import { triggerRouter } from "./routes/trigger";
 import { actionRouter } from "./routes/action";
 
 const app = express()
-const port = 3002;
+const port = 3000;
 
 app.use(express.json());
 app.use(cors())

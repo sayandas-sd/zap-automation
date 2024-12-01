@@ -10,7 +10,7 @@ const task_1 = require("./routes/task");
 const trigger_1 = require("./routes/trigger");
 const action_1 = require("./routes/action");
 const app = (0, express_1.default)();
-const port = 3002;
+const port = 3000;
 app.use(express_1.default.json());
 app.use((0, cors_1.default)());
 app.use("/api/v1/user", user_1.userRouter);
