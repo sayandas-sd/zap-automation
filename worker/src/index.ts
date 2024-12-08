@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client'
 import { Kafka } from "kafkajs";
 
 const worker = new PrismaClient();
-const TOPIC_NAME = "zap-task-events";
+const TOPIC_NAME = "task-events-2";
 
 const kafka = new Kafka({
     clientId: 'outbox_worker',

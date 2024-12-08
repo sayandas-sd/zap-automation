@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const kafkajs_1 = require("kafkajs");
-const TOPIC_NAME = "zap-task-events";
+const TOPIC_NAME = "task-events-2";
 const kafka = new kafkajs_1.Kafka({
     clientId: 'outbox_consumer',
     brokers: ['localhost:9092']

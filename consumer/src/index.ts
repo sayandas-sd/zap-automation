@@ -1,24 +1,27 @@
 import { Kafka } from "kafkajs";
 
-const TOPIC_NAME = "zap-task-events";
+const TOPIC_NAME = "task-events-2";
 
 const kafka = new Kafka({
     clientId: 'outbox_consumer',
     brokers: ['localhost:9092']
   })
 
-
-
 async function main() {
-    const consumer = kafka.consumer({ groupId: 'worker-main' })
+
+    const consumer = kafka.consumer({ 
+      groupId: 'worker-main' 
+    })
+
     await consumer.connect()
     
-   
+   //consumer subscribe events
     await consumer.subscribe({ 
         topic: TOPIC_NAME, 
         fromBeginning: true 
     })
 
+    
     await consumer.run({
       autoCommit: false,
         eachMessage: async ({ topic, partition, message }) => {
