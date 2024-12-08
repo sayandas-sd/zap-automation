@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { JWT_PASSWORD } from "./config";
 import jwt from "jsonwebtoken";
-import { string } from "zod";
+
 
 
 export function authMiddleware(req:Request, res:Response, next:NextFunction) {
