@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client'
 import { Kafka } from "kafkajs";
 
 const worker = new PrismaClient();
-const TOPIC_NAME = "task-events-2";
+const TOPIC_NAME = "zap-task-events-2";
 
 const kafka = new Kafka({
     clientId: 'outbox_worker',
@@ -24,10 +24,14 @@ async function main() {
        
         producer.send({
             topic: TOPIC_NAME,
-            messages: pendingData.map(r => ({
-                    value: r.taskRunId
-            }))
-        })
+            messages: pendingData.map(r => {
+                return {
+                    value: JSON.stringify({ 
+                        taskRunId: r.taskRunId, stage: 0 
+                    })
+                }
+            })
+        })  
 
         await worker.taskRunOut.deleteMany({
             where: {
@@ -36,6 +40,8 @@ async function main() {
                 }
             }
         })
+
+        await new Promise(r => setTimeout(r, 3000));
 
     }
 }

@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const client_1 = require("@prisma/client");
 const kafkajs_1 = require("kafkajs");
 const worker = new client_1.PrismaClient();
-const TOPIC_NAME = "task-events-2";
+const TOPIC_NAME = "zap-task-events-2";
 const kafka = new kafkajs_1.Kafka({
     clientId: 'outbox_worker',
     brokers: ['localhost:9092']
@@ -28,9 +28,13 @@ function main() {
             });
             producer.send({
                 topic: TOPIC_NAME,
-                messages: pendingData.map(r => ({
-                    value: r.taskRunId
-                }))
+                messages: pendingData.map(r => {
+                    return {
+                        value: JSON.stringify({
+                            taskRunId: r.taskRunId, stage: 0
+                        })
+                    };
+                })
             });
             yield worker.taskRunOut.deleteMany({
                 where: {
@@ -39,6 +43,7 @@ function main() {
                     }
                 }
             });
+            yield new Promise(r => setTimeout(r, 3000));
         }
     });
 }

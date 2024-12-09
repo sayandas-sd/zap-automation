@@ -17,8 +17,11 @@ const kafka = new kafkajs_1.Kafka({
 });
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
-        const consumer = kafka.consumer({ groupId: 'worker-main' });
+        const consumer = kafka.consumer({
+            groupId: 'worker-main'
+        });
         yield consumer.connect();
+        //consumer subscribe events
         yield consumer.subscribe({
             topic: TOPIC_NAME,
             fromBeginning: true
