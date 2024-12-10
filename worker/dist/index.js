@@ -26,12 +26,14 @@ function main() {
                 where: {},
                 take: 10
             });
+            console.log(pendingData);
             producer.send({
                 topic: TOPIC_NAME,
                 messages: pendingData.map(r => {
                     return {
                         value: JSON.stringify({
-                            taskRunId: r.taskRunId, stage: 0
+                            taskRunId: r.taskRunId,
+                            stage: 0
                         })
                     };
                 })
