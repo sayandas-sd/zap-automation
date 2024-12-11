@@ -1,5 +1,6 @@
 import { Kafka } from "kafkajs";
 import { PrismaClient } from '@prisma/client'
+import { JsonObject } from "@prisma/client/runtime/library";
 
 const TOPIC_NAME = "task-events-2";
 const prisma = new PrismaClient();
@@ -69,13 +70,21 @@ async function main() {
             return;
           }
 
+          const taskRunMetadata = taskDetails?.metadata;
+
           if(presentAction.type.id === "sol") {
-            console.log(`Sending out to solana`)
-             
+           
+            const amount = parse((presentAction.metadata as JsonObject)?.amount as string, taskRunMetadata);
+            const address = parse((presentAction.metadata as JsonObject)?.address as string, taskRunMetadata);
+            console.log(`Sending out SOL of ${amount} to address ${address}`);
+                          
           }
 
           if(presentAction.type.id === "gml") {
-            console.log(`Sending out to email`)
+            const body = parse((presentAction.metadata as JsonObject)?.body as string, taskRunMetadata);
+            const to = parse((presentAction.metadata as JsonObject)?.email as string, taskRunMetadata);
+
+             console.log(`Sending out email to ${to} body is ${body}`)
           }
           
           await new Promise(time => setTimeout(time, 1000));
@@ -94,7 +103,8 @@ async function main() {
               }]
           })  
           }
-
+          
+        
           console.log("processing done");
 
           await consumer.commitOffsets([{
@@ -108,3 +118,7 @@ async function main() {
 }
 
 main()
+
+function parse(body: string | number | boolean | JsonObject | import("@prisma/client/runtime/library").JsonArray | null | undefined, taskRunMetadata: unknown) {
+  throw new Error("Function not implemented.");
+}

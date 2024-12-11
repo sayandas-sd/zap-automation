@@ -19,20 +19,23 @@ model User {
   name        String
   email       String
   password    String
+  task        Task[]
 }
 
 model Task {
   id          String      @id @default(uuid())
   triggerId   String
+  userId      Int
   trigger     Trigger?  
   action      Action[]
   taskRun     TaskRun[]
-
+  user        User        @relation(fields: [userId], references: [id])
 }
  
 model Trigger {
   id            String             @id @default(uuid())
   triggerId     String
+  metadata      Json               @default("{}")
   type          AvailableTrigger   @relation(fields: [triggerId], references: [id])
   TaskId        String             @unique
   task          Task               @relation(fields: [TaskId], references: [id])
@@ -41,16 +44,18 @@ model Trigger {
 model AvailableTrigger {
   id        String      @id @default(uuid())
   name      String
+  image     String
   triggers  Trigger[]
 }
 
  
 model Action {
-  id         String             @id @default(uuid())
-  actionId   String
-  type       AvailableAction    @relation(fields: [actionId], references: [id])
-  TaskId     String             @unique
-  task       Task               @relation(fields: [TaskId], references: [id])
+  id            String             @id @default(uuid())
+  actionId      String
+  metadata      Json               @default("{}")
+  type          AvailableAction    @relation(fields: [actionId], references: [id])
+  TaskId        String            
+  task          Task               @relation(fields: [TaskId], references: [id])
   sortingOrder  Int                @default(0)
   
 }
@@ -58,6 +63,7 @@ model Action {
 model AvailableAction {
   id        String      @id @default(uuid())
   name      String
+  image     String
   actions   Action[]
 }
 

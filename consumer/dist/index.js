@@ -33,7 +33,7 @@ function main() {
         yield consumer.run({
             autoCommit: false,
             eachMessage: (_a) => __awaiter(this, [_a], void 0, function* ({ topic, partition, message }) {
-                var _b, _c, _d, _e, _f;
+                var _b, _c, _d, _e, _f, _g, _h, _j, _k;
                 console.log({
                     partition,
                     offset: message.offset,
@@ -65,15 +65,20 @@ function main() {
                 if (!presentAction) {
                     return;
                 }
+                const taskRunMetadata = taskDetails === null || taskDetails === void 0 ? void 0 : taskDetails.metadata;
                 if (presentAction.type.id === "sol") {
-                    console.log(`Sending out to solana`);
+                    const amount = parse((_e = presentAction.metadata) === null || _e === void 0 ? void 0 : _e.amount, taskRunMetadata);
+                    const address = parse((_f = presentAction.metadata) === null || _f === void 0 ? void 0 : _f.address, taskRunMetadata);
+                    console.log(`Sending out SOL of ${amount} to address ${address}`);
                 }
                 if (presentAction.type.id === "gml") {
-                    console.log(`Sending out to email`);
+                    const body = parse((_g = presentAction.metadata) === null || _g === void 0 ? void 0 : _g.body, taskRunMetadata);
+                    const to = parse((_h = presentAction.metadata) === null || _h === void 0 ? void 0 : _h.email, taskRunMetadata);
+                    console.log(`Sending out email to ${to} body is ${body}`);
                 }
                 yield new Promise(time => setTimeout(time, 1000));
-                const taskId = (_e = message.value) === null || _e === void 0 ? void 0 : _e.toString();
-                const lastStage = (((_f = taskDetails === null || taskDetails === void 0 ? void 0 : taskDetails.task.action) === null || _f === void 0 ? void 0 : _f.length) || 1) - 1;
+                const taskId = (_j = message.value) === null || _j === void 0 ? void 0 : _j.toString();
+                const lastStage = (((_k = taskDetails === null || taskDetails === void 0 ? void 0 : taskDetails.task.action) === null || _k === void 0 ? void 0 : _k.length) || 1) - 1;
                 if (lastStage !== stage) {
                     producer.send({
                         topic: TOPIC_NAME,
@@ -96,3 +101,6 @@ function main() {
     });
 }
 main();
+function parse(body, taskRunMetadata) {
+    throw new Error("Function not implemented.");
+}
