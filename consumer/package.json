@@ -11,7 +11,9 @@
   "description": "",
   "dependencies": {
     "@prisma/client": "^6.0.1",
+    "@solana/web3.js": "^1.98.2",
     "@types/nodemailer": "^6.4.17",
+    "bs58": "^6.0.0",
     "kafkajs": "^2.2.4",
     "nodemailer": "^6.9.16",
     "prisma": "^6.0.1"
